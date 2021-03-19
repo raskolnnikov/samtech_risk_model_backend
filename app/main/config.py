@@ -29,7 +29,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://infonut1_nutricion:0304mnON$@localhost:3306/infonut1_nutricion'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin:samtech1234@samtech-risk-dashboard.cldoz0pd0pvf.us-east-2.rds.amazonaws.com:3306/samtech_risk_dashboard'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # uncomment the line below to use postgres
