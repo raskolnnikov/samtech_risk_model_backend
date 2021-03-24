@@ -445,16 +445,20 @@ def get_patente_ranking_change(patente):
     return DetallePatenteDia.query.filter_by(patente=patente).order_by(DetallePatenteDia.step.desc()).limit(n_days).all(), 200
 
 def get_component_series(patente):
+    ranking_history = RankingEntry.query.filter_by(patente=patente).order_by(RankingEntry.step_id_week.asc()).limit(10).all()
+    history_positions = [(100 - round(v.predicted_rank,2) if round(v.predicted_rank,2) else 0) for v in ranking_history]
+    history_positions_padded = ([None] * (10 - len(history_positions))) + history_positions
     valores = DetallePatenteDia.query.filter_by(patente=patente).order_by(DetallePatenteDia.date.asc()).limit(10).all()
     mean_speed_weekly = valores[0].mean_speed / (1.00001 + valores[0].speed_departure_from_weekly_mean)
     mean_max_speed_weekly = valores[0].max_speed / (1.00001 + valores[0].max_speed_over_weekly_max)
     prealert_mean_weekly = valores[0].pre_alert_count_by_100km / (1.00001 + valores[0].pre_alert_count_by_100km_departure_from_weekly_mean)
     alert_mean_weekly = valores[0].alert_count_by_100km / (1.00001 + valores[0].alert_count_by_100km_departure_from_weekly_mean)
+
     series = [
         [
             {
-                'name': 'Indice de Riesgo',
-                'data': [round(v.risk_index_w,2) for v in valores]
+                'name': 'Histórico de Posiciones',
+                'data': history_positions_padded
             },
         ]
         ,
