@@ -35,12 +35,9 @@ class RankingEntry(db.Model):
     def previous_rank(self):
         max_week = int(db.session.query(func.max(RankingEntry.step_id_week)).scalar())
         try:
-            prev_rank = RankingEntry.query.filter(
-                    RankingEntry.step_id_week < max_week,
-                    RankingEntry.patente==self.patente
-            ).one().predicted_rank
-        except:
-            prev_rank = 0
+            prev_rank = RankingEntry.query.filter(RankingEntry.patente==self.patente).filter(RankingEntry.step_id_week < max_week).order_by(RankingEntry.step_id_week.desc()).first().predicted_rank
+        except Exception as e:
+            prev_rank = 100
         return prev_rank
 
     def __repr__(self):

@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 
 from .config import config_by_name
 from flask_cors import CORS, cross_origin
-
+import os
 
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 
@@ -20,6 +20,8 @@ flask_bcrypt = Bcrypt()
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_by_name['prod'])
+    APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
+    app.static_path = os.path.join(APP_ROOT, 'static')
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
     db.init_app(app)
     flask_bcrypt.init_app(app)

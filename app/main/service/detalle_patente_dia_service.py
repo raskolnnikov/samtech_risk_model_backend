@@ -4,6 +4,7 @@ import datetime
 from app.main import db
 from app.main.model.detalle_patente_dia import DetallePatenteDia
 from app.main.model.ranking import RankingEntry
+from flask import current_app
 import shap
 import joblib
 import pandas as pd
@@ -448,7 +449,7 @@ def get_component_series(patente):
     ranking_history = RankingEntry.query.filter_by(patente=patente).order_by(RankingEntry.step_id_week.asc()).limit(10).all()
     history_positions = [(100 - round(v.predicted_rank,2) if round(v.predicted_rank,2) else 0) for v in ranking_history]
     history_positions_padded = ([None] * (10 - len(history_positions))) + history_positions
-    valores = DetallePatenteDia.query.filter_by(patente=patente).order_by(DetallePatenteDia.date.asc()).limit(10).all()
+    valores = DetallePatenteDia.query.filter_by(patente=patente).order_by(DetallePatenteDia.date.desc()).limit(10).from_self().order_by(DetallePatenteDia.date.asc()).all()
     mean_speed_weekly = valores[0].mean_speed / (1.00001 + valores[0].speed_departure_from_weekly_mean)
     mean_max_speed_weekly = valores[0].max_speed / (1.00001 + valores[0].max_speed_over_weekly_max)
     prealert_mean_weekly = valores[0].pre_alert_count_by_100km / (1.00001 + valores[0].pre_alert_count_by_100km_departure_from_weekly_mean)
@@ -513,7 +514,7 @@ def get_component_series(patente):
 
 def get_decision_plot(patente, step_id_week):
     f = plt.figure()
-    ranker = joblib.load('C:/Users/raskolnnikov/Desktop/projects/samtech/samtech_entrega/modelos/ranker_v_1.0.joblib')
+    ranker = joblib.load(current_app.static_path+'/ranker_v_1.0.joblib')
     explainer = shap.TreeExplainer(ranker)
     ranker_features = ranker.feature_names
     expected_value = explainer.expected_value
