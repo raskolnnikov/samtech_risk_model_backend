@@ -539,14 +539,14 @@ def get_decision_plot(patente, step_id_week):
     }
     return response,200
 
+row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 def get_geofences(patente, step_id_week):
+    dict = row2dict(RankingEntry.query.filter_by(patente=patente, step_id_week=step_id_week).one())
     map_pickup = folium.Map( location=[-24.25340,-69.05596], zoom_start=6)
-    idx = np.random.randint(0,60,30)
-    for i,coord in enumerate(geofences):
-        if i in idx:
-            folium.Marker(location=[coord[0], coord[1]]).add_to(map_pickup)
+    for i in range(60):
+        if int(dict['geo_fence_'+str(i)]) > 0:
+            folium.Marker(location=[geofences[i][0], geofences[i][1]]).add_to(map_pickup)
     return map_pickup._repr_html_(), 200
-
 
 
 def save_changes(data):

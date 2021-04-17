@@ -19,7 +19,7 @@ flask_bcrypt = Bcrypt()
 
 def create_app(config_name):
     app = Flask(__name__)
-    app.config.from_object(config_by_name['prod'])
+    app.config.from_object(config_by_name['dev'])
     APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
     app.static_path = os.path.join(APP_ROOT, 'static')
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
