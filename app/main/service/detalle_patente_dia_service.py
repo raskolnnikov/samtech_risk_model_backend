@@ -542,7 +542,7 @@ def get_decision_plot(patente, step_id_week):
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 def get_geofences(patente, step_id_week):
     dict = row2dict(RankingEntry.query.filter_by(patente=patente, step_id_week=step_id_week).one())
-    map_pickup = folium.Map( location=[-24.25340,-69.05596], zoom_start=6)
+    map_pickup = folium.Map( location=[-24.25340,-69.05596], zoom_start=7)
     for i in range(60):
         if int(dict['geo_fence_'+str(i)]) > 0:
             folium.Marker(location=[geofences[i][0], geofences[i][1]]).add_to(map_pickup)
